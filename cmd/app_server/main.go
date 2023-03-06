@@ -38,9 +38,9 @@ func main() {
 	// TESTING
 	// Combat test 1
 
-	character := entities.NewCharacter("character", 1, 11, 2)
+	character, _ := entities.NewCharacter("character", 1, 11, 2)
 	character.PrintHealth()
-	enemy := entities.NewCharacter("enemy", 1, 5, 2)
+	enemy, _ := entities.NewCharacter("enemy", 1, 5, 2)
 
 	for character.Health() > 0 {
 		character.TakeDamage(enemy.Damage())

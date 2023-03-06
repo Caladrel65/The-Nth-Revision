@@ -1,6 +1,9 @@
 package entities
 
-import log "github.com/sirupsen/logrus"
+import (
+	"errors"
+	log "github.com/sirupsen/logrus"
+)
 
 type Character struct {
 	name      string
@@ -11,15 +14,32 @@ type Character struct {
 	gear      *EquippedGear
 }
 
-func NewCharacter(name string, level int, maxHealth int, damage int) Character {
-	return Character{
+func NewCharacter(name string, level int, maxHealth int, damage int) (*Character, error) {
+	logger := log.WithField("characterName", name)
+	invalidCharacter := false
+	if level < 1 {
+		invalidCharacter = true
+		logger = logger.WithField("invalidLevel", level)
+	}
+	if maxHealth < 1 {
+		invalidCharacter = true
+		logger = logger.WithField("invalidMaxHealth", maxHealth)
+	}
+
+	if invalidCharacter {
+		err := errors.New("character provided is invalid")
+		logger.WithError(err).Error()
+		return nil, err
+	}
+
+	return &Character{
 		name:      name,
 		level:     level,
 		maxHealth: maxHealth,
 		health:    maxHealth,
 		damage:    damage,
 		gear:      &EquippedGear{},
-	}
+	}, nil
 }
 
 func (c Character) Name() string            { return c.name }
